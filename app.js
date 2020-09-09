@@ -8,7 +8,9 @@ const hbs          = require('hbs');
 const mongoose     = require('mongoose');
 const logger       = require('morgan');
 const path         = require('path');
-
+const cors = require("cors");
+const session       = require('express-session');
+const passport      = require('passport');
 
 mongoose
   .connect('mongodb://localhost/studentsappbackend', {useNewUrlParser: true})
@@ -25,6 +27,11 @@ const debug = require('debug')(`${app_name}:${path.basename(__filename).split('.
 const app = express();
 
 // Middleware Setup
+app.use(cors({
+  credentials: true,
+  origin: [ "http://localhost:3000", "https://studentsfp.herokuapp.com/" ]
+}));
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -44,7 +51,16 @@ app.set('view engine', 'hbs');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
+// SESSION SETTINGS 
+app.use(session({
+  secret:"myPetAppWP",
+  resave: true,
+  saveUninitialized: true
+}));
 
+//PASSPORT initialize & session
+app.use(passport.initialize());
+app.use(passport.session());
 
 // default value for title local
 app.locals.title = 'Express - Generated with IronGenerator';
@@ -53,6 +69,13 @@ app.locals.title = 'Express - Generated with IronGenerator';
 
 const index = require('./routes/index');
 app.use('/', index);
+app.use('/', require('./routes/file-upload'));
+const authRoutes = require('./routes/auth-routes');
+app.use('/', authRoutes);
+const jobRoutes = require('./routes/job-routes');
+app.use('/', jobRoutes);
 
+const businessRoutes = require('./routes/business-routes')
+app.use('/', businessRoutes)
 
 module.exports = app;
