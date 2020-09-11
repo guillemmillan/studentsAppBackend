@@ -12,7 +12,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'test-folder',
+    folder: 'studentApp',
     format: async (req, file) => 'png',
     public_id: (req, file) => file.originalname
   }

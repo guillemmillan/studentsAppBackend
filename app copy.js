@@ -1,3 +1,4 @@
+
 require('dotenv').config();
 
 const bodyParser   = require('body-parser');
@@ -12,25 +13,26 @@ const cors = require("cors");
 const session       = require('express-session');
 const passport      = require('passport');
 
-mongoose
-  .connect('mongodb://localhost/studentsappbackend', {useNewUrlParser: true})
-  .then(x => {
-    console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
-  })
-  .catch(err => {
-    console.error('Error connecting to mongo', err)
-  });
-
 const app_name = require('./package.json').name;
 const debug = require('debug')(`${app_name}:${path.basename(__filename).split('.')[0]}`);
 
+require('./configs/passport');
+require('./configs/db')
+
+
+
 const app = express();
 
+// SESSION SETTINGS 
+const createSession = require('./configs/session');
+createSession(app);
+
+//PASSPORT initialize & session
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 // Middleware Setup
-app.use(cors({
-  credentials: true,
-  origin: [ "http://localhost:3000", "https://studentsfp.herokuapp.com/" ]
-}));
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -51,32 +53,30 @@ app.set('view engine', 'hbs');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
-// SESSION SETTINGS 
-app.use(session({
-  secret:"myPetAppWP",
-  resave: true,
-  saveUninitialized: true
-}));
 
-//PASSPORT initialize & session
-app.use(passport.initialize());
-app.use(passport.session());
+
+
 
 // default value for title local
-app.locals.title = 'Students App';
-
+app.locals.title = 'AppStudent';
+//CORS
+app.use(cors({
+  credentials: true,
+  origin: [ "http://localhost:3000", "http://localhost:3001", "https://studentsfp.herokuapp.com/" ]
+}));
 
 
 const index = require('./routes/index');
-app.use('/', index);
-app.use('/', require('./routes/file-upload'));
+
+app.use('/api/', index);
+app.use('/api/', require('./routes/file-upload'));
+
 const authRoutes = require('./routes/auth-routes');
-app.use('/', authRoutes);
+app.use('/api/', authRoutes);
 const jobRoutes = require('./routes/job-routes');
-app.use('/', jobRoutes);
+app.use('/api/', jobRoutes);
 
 const businessRoutes = require('./routes/business-routes')
-app.use('/', businessRoutes)
+app.use('/api', businessRoutes)
 
 module.exports = app;
-

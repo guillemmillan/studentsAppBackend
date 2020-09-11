@@ -11,11 +11,18 @@ const userSchema = new Schema({
     required: true},
   email: {  
     type: String,
+    required: true
     },
-  imgPath: String
+  picture: {
+    type: String,
+    default: "https://exclipart.com/transparent450_/user-silhouette.png"
+  }  
 }, 
 {
-  timestamps: true
+  timestamps: {
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  }
 });
 
 const User = mongoose.model('User', userSchema);
