@@ -3,59 +3,59 @@ const mongoose = require('mongoose')
 const router = express.Router()
 const Job = require('../models/job')
 const { response } = require('../app')
-//const fileUploader = require('../configs/cloudinary.config');
+const Business = require('../models/business')
 
-
-router.post('/add-job', /*uploadCloud.single("image"),*/(req, res, next)=>{Job.create({
-  name: req.body.Name,
-  company: req.body.Company,
-  address: req.body.Address,
-  description: req.body.Description,
-  imageUrl: req.body.image
+router.post('/add-job', async (req, res, next)=>{
+ try{
+  const business = await Business.findOne({owner:req.session.currentUser._id})
+  console.log(business)
+  console.log(req.session.currentUser)
+  console.log(req.body)
+  const newJob = await Job.create({
+  name: req.body.jobName,
+  company: business._id,
+  address: req.body.jobAddress,
+  description: req.body.jobDescription,
 })
-   
-  .then(response=>{
-    res.json
+ res.status(200).json(newJob)  
+ }
+ catch(err){
+   console.log(err)
+ }
+
+})
+
+router.get('/jobs/:id', (req, res,next)=> {
+  //detalles de oferta de trabajo
+  console.log("error al pasar datos", req.params)
+  Job.findById({_id: req.params.id})
+  .populate("company")
+  .then(job =>  {
+    res.status(200).json(job)
+    console.log(job)
   })
   .catch(err =>{
-    res.json(err)
+    console.log(err)
+    res.status(400).json(err)
   })
 })
 
-{/*router.get('/jobs', (req, res, next =>{
+router.get('/jobs', (req, res, next) =>{
   //Muestra trabajos publicados
   Job.find()
-  .populate('business')
-  .then(job => {
-    res.json(job)
+  .populate("company")
+  .then(jobs => {
+    console.log("error jobs", jobs)
+    res.status(200).json(jobs)
   })
+
   .catch(err=> {
     res.json(err)
   })
-})) */}
+}) 
 
 
-router.get('/projects', (req, res, next) => {
-  // recoger TODOS los proyectos, y devolver como JSON
-  // TO-DO: popular con las tasks
-  Project.find()
-  .populate('tasks')
-  .then(projects => {
-    res.json(projects)
-  })
-  .catch(err => {
-    res.json(err)
-  })
 
-})
-
-
-router.get('/jobs/:id', (req, res,next)=> {
-  Job.findById(req.params.id)
-  .then(job =>  {
-    res.json(job)
-  })
-})
 
 
 module.exports = router
