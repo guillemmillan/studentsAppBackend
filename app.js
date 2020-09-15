@@ -69,9 +69,13 @@ app.locals.title = 'Students App';
 
 const index = require('./routes/index');
 app.use('/', index);
-app.use('/', require('./routes/file-upload'));
+
+const upload = require('./routes/file-upload')
+app.use('/', upload)
+
 const authRoutes = require('./routes/auth-routes');
 app.use('/', authRoutes);
+
 const jobRoutes = require('./routes/job-routes');
 app.use('/', jobRoutes);
 

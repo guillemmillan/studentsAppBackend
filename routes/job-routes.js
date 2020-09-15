@@ -4,8 +4,9 @@ const router = express.Router()
 const Job = require('../models/job')
 const { response } = require('../app')
 const Business = require('../models/business')
+const uploader = require('../configs/cloudinary-setup');
 
-router.post('/add-job', async (req, res, next)=>{
+router.post('/add-job',  async (req, res, next)=>{
  try{
   const business = await Business.findOne({owner:req.session.currentUser._id})
   console.log(business)
@@ -16,6 +17,7 @@ router.post('/add-job', async (req, res, next)=>{
   company: business._id,
   address: req.body.jobAddress,
   description: req.body.jobDescription,
+  imagerUrl: req.body.imagerUrl
 })
  res.status(200).json(newJob)  
  }
