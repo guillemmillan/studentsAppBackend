@@ -56,7 +56,9 @@ authRoutes.post('/signup', (req, res, next) => {
             // Automatically log in user after sign up
             // .login() here is actually predefined passport method
            req.session.currentUser = aNewUser
-           res.status(200).json({aNewUser})
+           res.status(200).json({aNewUser})    
+           res.redirect('/login');
+
         });
     });
 });
@@ -64,7 +66,8 @@ authRoutes.post('/signup', (req, res, next) => {
 authRoutes.post('/login', async (req, res, next) => {
     const {
       username,
-      password
+      password,
+      imageUrl
     } = req.body
     if (!username || !password) {
       res.status(400).json({message: "Please provide an email and password"})
@@ -86,6 +89,15 @@ authRoutes.post('/login', async (req, res, next) => {
         console.log("error login", error)
       next(error)
     }
+    res.redirect('/profile');
+
   });
+
+  authRoutes.post('/logout', (req, res, next) => {
+    // req.logout() is defined by passport
+    req.logout();
+    res.status(200).json({ message: 'Log out success!' })
+    res.redirect('/');
+});
  
 module.exports = authRoutes;

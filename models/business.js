@@ -8,7 +8,7 @@ const businessSchema = new Schema(
     Description: String,
     imageUrl:{
       type: String,
-      default: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"
+      default: "http://clientes.wiroagency.com/pruebas/wp-content/uploads/sites/5/2020/09/photo-1497366754035-f200968a6e72.jpg"
     },
     jobs: [
       {
