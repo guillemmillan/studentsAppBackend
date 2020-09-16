@@ -13,7 +13,7 @@ const session       = require('express-session');
 const passport      = require('passport');
 
 mongoose
-  .connect('mongodb://localhost/studentsappbackend', {useNewUrlParser: true})
+  .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
   .then(x => {
     console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
   })
