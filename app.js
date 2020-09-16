@@ -37,11 +37,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-//DEPLOY
+//DEPLOY/////
 app.use((req, res, next) => {
   // If no routes match, send them the React HTML.
   res.sendFile(__dirname + "/public/index.html");
 });
+
+
+
 // Express View engine setup
 
 app.use(require('node-sass-middleware')({
