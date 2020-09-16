@@ -12,6 +12,7 @@ const userSchema = new Schema({
   email: {  
     type: String,
     },
+    
   picture: {
     type: String,
     default: "https://exclipart.com/transparent450_/user-silhouette.png"
